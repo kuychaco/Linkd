@@ -9,41 +9,50 @@ var userController = require('./userController.js');
 var isLoggedIn = require('../config/helpers.js').isLoggedIn;
 
 
+// TODO: Refactor after frontend is finished - rather than rendering, send responses to client;  
 module.exports = function(app, passport) {
 
   // Google Routes
-  // Send to google to do authentication
-  app.get('/auth/google', 
-    passport.authenticate('google', { scope: ['profile', 'email'] }));
+  // Send to Google for authentication, get user profile and email
+  app.route('/auth/google')
+    .get(passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-  // The callback after google has authenticated the user
-  app.get('/auth/google/callback',
-    passport.authenticate('google', {
+  // After google has authenticated the user, redirect to appropriate url
+  app.route('/auth/google/callback')
+    .get(passport.authenticate('google', {
       successRedirect: '/api/user/profile',
       failureRedirect: '/api/user'
     })); 
 
   // Home Page
-  app.get('/', isLoggedIn, function(req, res) {
-    res.render('profile.ejs',  { user: req.user });
-  });
+  app.route('/')
+    .get(isLoggedIn, function(req, res) {
+      res.render('profile.ejs',  { user: req.user });
+    });
 
   // Profile section 
   // Use route middleware to verify user is logged in
-  app.get('/profile', isLoggedIn, function(req, res) {
-    // Get the user out of the session and pass to template
-    res.render('profile.ejs', { user: req.user });
-  });
+  app.route('/profile')
+    .get(isLoggedIn, function(req, res) {
+      // Get the user out of the session and pass to template
+      res.render('profile.ejs', { user: req.user });
+    });
 
   // Login
-  app.get('/login', function(req, res) {
-    res.render('login.ejs');
-  });
+  app.route('/login')
+    .get(function(req, res) {
+      res.render('login.ejs');
+    });
 
   // Logout
-  app.get('/logout', function(req, res) {
-    req.logout();
-    res.redirect('/');
-  });
+  app.route('/logout')
+    .get(function(req, res) {
+      req.logout();
+      res.redirect('/');
+    });
+
+  // Send list of users to client
+  app.route('/list')
+    .get(userController.getUsersList);
 
 };

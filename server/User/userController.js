@@ -7,25 +7,30 @@
 
 var User = require('../config/db_models.js').User;
 
-
+// Check if user is in database
 module.exports.checkUserAuth = function(profile, token, callback) {
+  
   User.find({ where: {user_id_google: profile.id} })
-  .then(function(user) {
-    if (user) {
-      console.log('User', user.get({plain:true}).name_google, 'already exists');
-      callback(null, user);
-    }
-    if (user === null) {
-      module.exports.createUserAuth(profile, token, callback);
-    }
-  })
-  .error(function(err) {
-    console.error('Error finding user:', err);
-    callback(err);
-  });
+    .then(function(user) {
+      if (user) {
+        console.log('User', user.get({plain:true}).name_google, 'already exists');
+        callback(null, user);
+      }
+
+      // If user not found, create user
+      if (user === null) {
+        module.exports.createUserAuth(profile, token, callback);
+      }
+    })
+    .error(function(err) {
+      console.error('Error finding user:', err);
+      callback(err);
+    });
 };
 
+// Create new user in database
 module.exports.createUserAuth = function(profile, token, callback) {
+
   User.create({
     user_id_google: profile.id,
     token_google: token,
@@ -40,4 +45,18 @@ module.exports.createUserAuth = function(profile, token, callback) {
     console.error('Error creating user:', err);
     callback(err);
   });
+};
+
+// Retrieve list of all users
+module.exports.getUsersList = function(req, res, next) {
+
+  User.findAll()
+    .then(function(users) {
+      console.log('Retrieved list of all users from database');
+      res.json(users);
+    })
+    .error(function(err) {
+      console.error('Error retrieving list of all users:', err);
+      res.status(500).send(err);
+    });
 };
