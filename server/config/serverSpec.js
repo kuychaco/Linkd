@@ -35,24 +35,24 @@ describe('basic server connection test', function() {
 });
 
 // Test database controllers
-describe('database controller function tests', function() {
+// describe('database controller function tests', function() {
 
-  userSpec.addThenRetrieveUsersAsync()
-  .then(function() {
-    return groupSpec.createGroupsAsync();
-  })
-  // .then(function() {
-  //   return folderSpec();
-  // })
-  // .then(function() {
-  //   return linkSpec();
-  // })
-  // .then(function() {
-  //   return commentSpec();
-  // })
-  .catch(function(err) {
-    console.error('Error testing database controllers:', err);
-  });
+//   userSpec.addThenRetrieveUsersAsync()
+//   .then(function() {
+//     return groupSpec.createGroupsAsync();
+//   })
+//   // .then(function() {
+//   //   return folderSpec();
+//   // })
+//   // .then(function() {
+//   //   return linkSpec();
+//   // })
+//   // .then(function() {
+//   //   return commentSpec();
+//   // })
+//   .catch(function(err) {
+//     console.error('Error testing database controllers:', err);
+//   });
 
   
   
@@ -78,4 +78,4 @@ describe('database controller function tests', function() {
     // Create 2 sub folders in a folder
     // Delete folder (and all subfolders inside)
 
-})
+// })
